@@ -1,125 +1,72 @@
-/*
-Code from: https://stackoverflow.com/questions/2368784/draw-on-html5-canvas-using-a-mouse
-Credit to: user1083202 from stackoverflow
-Why I coped: (why reinvent the wheel....)
-*/
+<!DOCTYPE html>
+<html lang="en">
 
-var canvas,
-	ctx,
-	flag = false,
-	prevX = 0,
-	currX = 0,
-	prevY = 0,
-	currY = 0,
-	dot_flag = false;
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="decription" content="Canvas drawer" />
 
-var x = "black",
-	y = 2;
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous" />
 
-function init() {
-	canvas = document.getElementById("can");
-	ctx = canvas.getContext("2d");
-	width = canvas.width;
-	height = canvas.height;
+    <title>Drawer</title>
+</head>
 
-	canvas.addEventListener(
-		"mousemove",
-		function (event) {
-			findxy("move", event);
-		},
-		false
-	);
-	canvas.addEventListener(
-		"mousedown",
-		function (event) {
-			findxy("down", event);
-		},
-		false
-	);
-	canvas.addEventListener(
-		"mouseup",
-		function (event) {
-			findxy("up", event);
-		},
-		false
-	);
-	canvas.addEventListener(
-		"mouseout",
-		function (event) {
-			findxy("out", event);
-		},
-		false
-	);
-}
+<body>
+    <nav class="navbar navbar-dark" style="background-color: #303530">
+        <div class="container-fluid text-light">
+            <div class="row" id="Reset">
+                <div class="col fs-3">Toolbar</div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn text-light bg-danger btn-lg" id="red"
+                        onclick="changeColor(this.id)"></button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn text-light bg-info btn-lg" id="blue"
+                        onclick="changeColor(this.id)"></button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn text-light bg-success btn-lg" id="green"
+                        onclick="changeColor(this.id)"></button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn text-dark bg-light btn-lg" id="white"
+                        onclick="changeColor(this.id)"></button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn text-light bg-dark btn-lg" id="black"
+                        onclick="changeColor(this.id)"></button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-function changeColor(obj) {
-	switch (obj) {
-		case "green":
-			x = "green";
-			break;
-		case "blue":
-			x = "blue";
-			break;
-		case "red":
-			x = "red";
-			break;
-		case "yellow":
-			x = "yellow";
-			break;
-		case "orange":
-			x = "orange";
-			break;
-		case "black":
-			x = "black";
-			break;
-		case "white":
-			x = "white";
-			break;
-	}
-	if (x == "white") y = 14;
-	else y = 2;
-}
+    <div class="container-fluid w-100% bg-dark" style="height: 590px">
+        <div class="row" style="height: 590px">
+            <div class="col">
+                <canvas class="position-absolute" id="can" width="1300" height="560px" style="
+							background-color: white;
+							left: 30px;
+							bottom: 10px;
+							border: 3px solid gray;
+						"></canvas>
+                <!--Add a script that changes the height of this element when size of page changes-->
+            </div>
+        </div>
+    </div>
 
-function draw() {
-	ctx.beginPath(); // Starts new path
-	ctx.moveTo(prevX, prevY); // This moves the brush to the prev coor
-	ctx.lineTo(currX, currY); // This makes line from the moveTo() to the curr Coor
+    <!-- Optional JavaScript; choose one of the two! -->
 
-	// Defines what how to make the strokes
-	ctx.strokeStyle = x;
-	ctx.lineWidth = y;
-	ctx.stroke();
-	ctx.closePath();
-}
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
 
-function findxy(res, e) {
-	if (res == "down") {
-		prevX = currX;
-		prevY = currY;
-		currX = e.clientX - canvas.offsetLeft;
-		currY = e.clientY - canvas.offsetTop;
+    <script src="index.js"></script>
+</body>
 
-		flag = true;
-		dot_flag = true;
-		if (dot_flag) {
-			ctx.beginPath();
-			ctx.fillStyle = x;
-			ctx.fillRect(currX, currY, 2, 2);
-			ctx.closePath();
-			dot_flag = false;
-		}
-	}
-	if (res == "up" || res == "out") {
-		flag = false;
-	}
-	if (res == "move") {
-		if (flag) {
-			// Ensure that mouse is not outside or not up
-			prevX = currX;
-			prevY = currY;
-			currX = e.clientX - canvas.offsetLeft;
-			currY = e.clientY - canvas.offsetTop;
-			draw();
-		}
-	}
-}
+</html>
