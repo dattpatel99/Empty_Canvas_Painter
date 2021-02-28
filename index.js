@@ -13,6 +13,10 @@ var canvas, // For the canas element
 var color = "black",
 	thickness = 2;
 
+function changeCanvasSize() {
+
+}
+
 function init() {
 	canvas = document.getElementById("can");
 	ctx = canvas.getContext("2d");
@@ -26,6 +30,10 @@ function init() {
 	document.getElementById("can").addEventListener("mouseup", disableFlag);
 
 	document.getElementById("can").addEventListener("mouseout", disableFlag);
+
+	window.addEventListener('resize', resizeCanvas, false);
+	// Draw canvas border for the first time.
+	resizeCanvas();
 }
 
 // For changing colors
@@ -94,6 +102,11 @@ function move(event) {
 		// Closes the path
 		ctx.closePath();
 	}
+}
+
+function resizeCanvas() {
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
 }
 
 // Disables flag when mouse is out or mouse is up
