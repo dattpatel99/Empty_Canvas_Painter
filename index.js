@@ -1,72 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="decription" content="Canvas drawer" />
+window.onload = init();
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous" />
+var canvas, // For the canas element
+	ctx, // For canvas get 2d
+	draw_flag = false, // Can user draw or not
+	prevX = 0, // The last x loc
+	currX = 0, // The last y loc
+	prevY = 0, // The curr x loc
+	currY = 0, // The curr y loc
+	dot_flag = false; // For dot
 
-    <title>Drawer</title>
-</head>
+var color = "black",
+	thickness = 2;
 
-<body>
-    <nav class="navbar navbar-dark" style="background-color: #303530">
-        <div class="container-fluid text-light">
-            <div class="row" id="Reset">
-                <div class="col fs-3">Toolbar</div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <button type="button" class="btn text-light bg-danger btn-lg" id="red"
-                        onclick="changeColor(this.id)"></button>
-                </div>
-                <div class="col">
-                    <button type="button" class="btn text-light bg-info btn-lg" id="blue"
-                        onclick="changeColor(this.id)"></button>
-                </div>
-                <div class="col">
-                    <button type="button" class="btn text-light bg-success btn-lg" id="green"
-                        onclick="changeColor(this.id)"></button>
-                </div>
-                <div class="col">
-                    <button type="button" class="btn text-dark bg-light btn-lg" id="white"
-                        onclick="changeColor(this.id)"></button>
-                </div>
-                <div class="col">
-                    <button type="button" class="btn text-light bg-dark btn-lg" id="black"
-                        onclick="changeColor(this.id)"></button>
-                </div>
-            </div>
-        </div>
-    </nav>
+function init() {
+	canvas = document.getElementById("can");
+	ctx = canvas.getContext("2d");
+	width = canvas.width;
+	height = canvas.height;
 
-    <div class="container-fluid w-100% bg-dark" style="height: 590px">
-        <div class="row" style="height: 590px">
-            <div class="col">
-                <canvas class="position-absolute" id="can" width="1300" height="560px" style="
-							background-color: white;
-							left: 30px;
-							bottom: 10px;
-							border: 3px solid gray;
-						"></canvas>
-                <!--Add a script that changes the height of this element when size of page changes-->
-            </div>
-        </div>
-    </div>
+	// Event listeners on canvas
+	document.getElementById("can").addEventListener("mousedown", mouseDownFuc);
+	document.getElementById("can").addEventListener("mousemove", move);
 
-    <!-- Optional JavaScript; choose one of the two! -->
+	document.getElementById("can").addEventListener("mouseup", disableFlag);
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
-        crossorigin="anonymous"></script>
+	document.getElementById("can").addEventListener("mouseout", disableFlag);
+}
 
-    <script src="index.js"></script>
-</body>
+// For changing colors
+function changeColor(elemID) {
+	switch (elemID) {
+		case "red":
+			color = "red";
+			break;
+		case "blue":
+			color = "blue";
+			break;
+		case "white":
+			color = "white";
+			thickness = 20; // Makes the line thicker so it acts as a large eraser
+			break;
+		case "green":
+			color = "green";
+			break;
+		default:
+			color = "black";
+			break;
+	}
+}
 
-</html>
+// What to do when mouse is down
+function mouseDownFuc(event) {
+	draw_flag = true;
+	dot_flag = true;
+
+	// Basically subtracts the size of canvas from screen, from the event click position to remove the extra border error
+	currX = event.clientX - canvas.offsetLeft;;
+	currY = event.clientY - canvas.offsetTop;
+
+
+	if (dot_flag) {
+		ctx.beginPath();
+		ctx.moveTo(currX, currY);
+		ctx.strokeStyle = color;
+		ctx.fillRect(currX, currY, 2, 2); // Creates a very tiny pixel 
+		ctx.closePath();
+		dot_flag = false;
+	}
+}
+
+// What to do when mouse is moved
+function move(event) {
+	if (draw_flag) {
+		prevX = currX;
+		prevY = currY;
+
+		// Basically subtracts the size of canvas from screen, from the event click position to remove the extra border error
+		currX = event.clientX - canvas.offsetLeft;
+		currY = event.clientY - canvas.offsetTop;
+
+		ctx.beginPath(); // Starts from new path
+		ctx.moveTo(prevX, prevY); // Moves to the previous position 
+		ctx.lineTo(currX, currY); // Creates a line from previous position to this position
+
+		// The lines descriptive features
+		ctx.strokeStyle = color;
+		ctx.lineWidth = thickness;
+
+		// Makes the stroke
+		ctx.stroke();
+
+		// Closes the path
+		ctx.closePath();
+	}
+}
+
+// Disables flag when mouse is out or mouse is up
+function disableFlag(event) {
+	draw_flag = false;
+}
